@@ -28,12 +28,12 @@
    git init
    git add index.html CLAUDE.md
    git commit -m "Initial commit: KDI tax withholding guide"
-   gh repo create kdi-tax-guide --public --source=. --remote=origin --push
+   gh repo create kdis-tax-guide --public --source=. --remote=origin --push
    ```
 
 3. **GitHub Pages 활성화**
    ```
-   gh api -X POST repos/{owner}/kdi-tax-guide/pages -f "source[branch]=main" -f "source[path]=/"
+   gh api -X POST repos/{owner}/kdis-tax-guide/pages -f "source[branch]=main" -f "source[path]=/"
    ```
    ({owner}는 실제 GitHub 사용자명으로 자동 치환되거나, 안 되면 사용자명 직접 입력)
 
@@ -44,7 +44,7 @@
 4. **결과 확인**
    1~2분 후 아래 URL이 살아있는지 확인:
    ```
-   https://{사용자명}.github.io/kdi-tax-guide/
+   https://{사용자명}.github.io/kdis-tax-guide/
    ```
 
 ## 향후 유지보수
