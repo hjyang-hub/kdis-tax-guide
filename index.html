@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>전문가 용역비 원천징수·비과세 안내 / Withholding Tax &amp; Exemption Guide</title>
+<style>
+  :root{
+    --navy:#1c3a5e; --navy-dark:#12253c; --accent:#2f6fb0; --bg:#f4f6f9;
+    --card:#ffffff; --border:#dbe2ea; --text:#1f2937; --muted:#64748b;
+    --good:#e8f5e9; --good-border:#66bb6a; --warn:#fff3e0; --warn-border:#ffb74d;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:"Segoe UI","Malgun Gothic",Arial,sans-serif;
+    background:var(--bg); color:var(--text); padding:32px 16px;
+  }
+  .wrap{max-width:1040px; margin:0 auto;}
+  .steps-row{display:flex; flex-wrap:wrap; gap:16px; margin-bottom:16px; align-items:stretch;}
+  .steps-row .card{flex:1 1 260px; margin-bottom:0;}
+  header{
+    background:var(--navy); color:#fff; border-radius:10px;
+    padding:24px 28px; margin-bottom:20px;
+  }
+  header h1{margin:0 0 6px; font-size:20px;}
+  header p{margin:0; font-size:13px; color:#cfe0f2;}
+  .card{
+    background:var(--card); border:1px solid var(--border); border-radius:10px;
+    padding:22px 24px; margin-bottom:16px;
+  }
+  .step-label{font-size:11px; letter-spacing:.06em; color:var(--accent); font-weight:700; margin-bottom:4px;}
+  .q-kr{font-size:16px; font-weight:700; margin:0 0 2px;}
+  .q-en{font-size:13px; color:var(--muted); margin:0 0 14px;}
+  .options{display:flex; flex-direction:column; gap:10px;}
+  .opt{
+    display:flex; align-items:center; gap:12px; border:1.5px solid var(--border);
+    border-radius:8px; padding:12px 14px; cursor:pointer; transition:.15s;
+  }
+  .opt:hover{border-color:var(--accent); background:#f7fafd;}
+  .opt.selected{border-color:var(--accent); background:#eaf2fa;}
+  .opt input{accent-color:var(--accent); width:16px; height:16px; flex:none;}
+  .opt .label{font-size:14px;}
+  .opt .label .kr{font-weight:600;}
+  .opt .label .en{color:var(--muted); font-size:12.5px;}
+  select.country{
+    width:100%; padding:10px 12px; border:1.5px solid var(--border); border-radius:8px;
+    font-size:14px; margin-top:4px;
+  }
+  .hidden{display:none;}
+  .nav-row{display:flex; justify-content:space-between; margin-top:18px;}
+  button{
+    border:none; border-radius:7px; padding:10px 18px; font-size:14px; cursor:pointer;
+    font-weight:600;
+  }
+  .btn-primary{background:var(--navy); color:#fff;}
+  .btn-primary:disabled{background:#9fb3c8; cursor:not-allowed;}
+  .btn-secondary{background:transparent; color:var(--muted); border:1px solid var(--border);}
+  .result{border-radius:10px; padding:22px 24px; border:1.5px solid; margin-top:4px;}
+  .result.exempt{background:var(--good); border-color:var(--good-border);}
+  .result.taxed{background:var(--warn); border-color:var(--warn-border);}
+  .result h2{margin:0 0 4px; font-size:17px;}
+  .result .sub{margin:0 0 14px; font-size:13px; color:#555;}
+  .result p{font-size:14px; line-height:1.65; margin:0 0 10px;}
+  .result p.en{color:#3d4753;}
+  .doclist{background:#fff; border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin:10px 0;}
+  .doclist li{font-size:14px; line-height:1.7; margin-bottom:6px;}
+  .doclist li .en{display:block; color:var(--muted); font-size:12.5px;}
+  .tag{display:inline-block; font-size:11px; font-weight:700; padding:3px 9px; border-radius:20px; margin-bottom:10px;}
+  .tag.exempt{background:#2e7d32; color:#fff;}
+  .tag.taxed{background:#e08e00; color:#fff;}
+  .note{font-size:12px; color:var(--muted); margin-top:14px; border-top:1px dashed var(--border); padding-top:10px;}
+  .restart{margin-top:16px; text-align:right;}
+  .progress{font-size:12px; color:var(--muted); margin-bottom:14px;}
+  .exclusion{background:#fff; border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-top:14px;}
+  .exclusion h3{margin:0 0 8px; font-size:13.5px; color:var(--navy);}
+  .exclusion p{font-size:13px; margin:0 0 8px; line-height:1.6;}
+  .exclusion p.en{color:var(--muted); font-size:12px;}
+  .exclusion ol{margin:0 0 10px; padding-left:18px;}
+  .exclusion li{font-size:13px; margin-bottom:8px; line-height:1.6;}
+  .exclusion li .en{display:block; color:var(--muted); font-size:12px; margin-top:2px;}
+  .ref-link{font-size:12.5px; margin:2px 0 0;}
+  .ref-link a{color:var(--accent);}
+  .visa-warn{background:#fff8e1; border:1.5px solid #ffca28; border-radius:8px; padding:14px 16px; margin-top:14px;}
+  .visa-warn h3{margin:0 0 6px; font-size:13.5px; color:#8a6100;}
+  .visa-warn p{font-size:13px; margin:0 0 6px; line-height:1.6; color:#5c4300;}
+  .visa-warn p.en{color:#8a7a4a; font-size:12px;}
+  .rate-info{background:#eef4fb; border:1px solid #bcd6ef; border-radius:8px; padding:14px 16px; margin-top:14px;}
+  .rate-info h3{margin:0 0 8px; font-size:13.5px; color:var(--navy);}
+  .rate-info p{font-size:13px; margin:0 0 6px; line-height:1.6;}
+  .rate-info p.en{color:var(--muted); font-size:12px; margin:0 0 10px;}
+  .rate-info ul{margin:0 0 12px; padding-left:18px;}
+  .rate-info li{font-size:13px; margin-bottom:8px; line-height:1.6;}
+  .rate-info li .en{display:block; color:var(--muted); font-size:12px; margin-top:2px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>전문가 용역비 원천징수·비과세 안내</h1>
+    <p>Withholding Tax &amp; Tax Exemption Guide for Expert Service Fees</p>
+  </header>
+
+  <div id="app"></div>
+</div>
+
+<script>
+// ---------------------------------------------------------------
+// Unified tax-treaty exemption document requirements (not asked per
+// country — the guidance is the same for everyone, with the U.S. case
+// shown inline as a worked example for the residency-certificate item).
+// ---------------------------------------------------------------
+const TREATY_EXEMPTION_DOCS = [
+  {
+    kr: "조세조약에 따른 비과세면제 신청서 — 상단 인적사항 및 서명 필수 (금액 및 기타 정보는 재무회계팀에서 작성 후 국세청 제출 예정)",
+    en: "Application for Non-Taxation·Exemption — top section (personal details) and signature required (the amount and other details will be completed by the Finance & Accounting Team before submission to the National Tax Service)"
+  },
+  {
+    kr: "거주자증명서 — 소득자의 거주지국 과세당국이 발급한 당해연도 증명서 (예: 미국 거주자의 경우 미국 국세청(IRS)이 발급한 Form 6166만 인정됩니다.)",
+    en: "Certificate of Tax Residency — a certificate for the current year issued by the tax authority of the recipient's country of residence (e.g., for U.S. residents, only Form 6166 issued by the IRS is accepted)"
+  },
+  {
+    kr: "신분증명서류 — 여권 또는 영주권 사본",
+    en: "Identification Document — copy of passport or permanent residency card"
+  }
+];
+
+const state = { residency: null, location: null, treaty: null };
+
+function opt(name, value, kr, en, checked){
+  return `<label class="opt${checked?' selected':''}" data-name="${name}" data-value="${value}">
+    <input type="radio" name="${name}" value="${value}" ${checked?'checked':''}>
+    <span class="label"><span class="kr">${kr}</span><br><span class="en">${en}</span></span>
+  </label>`;
+}
+
+function render(){
+  const app = document.getElementById('app');
+  let html = '';
+
+  // STEP 1 — residency
+  html += `<div class="card" id="step1">
+    <div class="step-label">STEP 1</div>
+    <p class="q-kr">소득자의 거주 구분은 무엇인가요?</p>
+    <p class="q-en">What is the recipient's tax residency status?</p>
+    <div class="options">
+      ${opt('residency','resident','거주자','Resident of Korea', state.residency==='resident')}
+      ${opt('residency','nonresident','비거주자','Non-resident of Korea', state.residency==='nonresident')}
+    </div>
+    <p class="ref-link" style="margin-top:12px;">(참고 · 거주자/비거주자 판정 기준, 국문만 제공) <a href="https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=7916&amp;mi=6636" target="_blank" rel="noopener">국세청 — 비거주자 판정</a></p>
+  </div>`;
+
+  // STEP 2 — location (only if nonresident)
+  if(state.residency === 'nonresident'){
+    html += `<div class="card" id="step2">
+      <div class="step-label">STEP 2</div>
+      <p class="q-kr">용역수행장소는 어디인가요?</p>
+      <p class="q-en">Where was the service actually performed?</p>
+      <div class="options">
+        ${opt('location','abroad','해외','Outside Korea', state.location==='abroad')}
+        ${opt('location','korea','한국','In Korea', state.location==='korea')}
+      </div>
+    </div>`;
+  }
+
+  // STEP 3 — treaty exemption (only if nonresident + korea)
+  if(state.residency === 'nonresident' && state.location === 'korea'){
+    html += `<div class="card" id="step3">
+      <div class="step-label">STEP 3</div>
+      <p class="q-kr">조세조약에 따른 비과세(면제) 적용을 신청하시겠습니까?</p>
+      <p class="q-en">Would you like to apply for exemption under an applicable tax treaty?</p>
+      <div class="options">
+        ${opt('treaty','yes','예, 신청함','Yes, I will apply', state.treaty==='yes')}
+        ${opt('treaty','no','아니오, 신청하지 아니함','No, I will not apply', state.treaty==='no')}
+      </div>
+    </div>`;
+  }
+
+  app.innerHTML = `<div class="steps-row">${html}</div>`;
+  attachHandlers();
+  renderResult();
+}
+
+function attachHandlers(){
+  document.querySelectorAll('.opt').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const name = el.dataset.name, value = el.dataset.value;
+      state[name] = value;
+      // reset downstream state when an earlier answer changes
+      if(name === 'residency'){ state.location=null; state.treaty=null; }
+      if(name === 'location'){ state.treaty=null; }
+      render();
+    });
+  });
+}
+
+// Shared notice shown for both non-resident + Korea outcomes (with or
+// without treaty exemption): why exemption might not apply, and the
+// visa reminder.
+function extraNoticeHtml(){
+  return `
+    <div class="exclusion">
+      <h3>적용 제외 사유 / Cases Where Exemption Does Not Apply</h3>
+      <p>본 신청은 조세조약에 따른 비과세·면제 적용이 가능한 경우에 한하여 제출하는 서류입니다. 따라서 다음의 경우에는 비과세·면제 적용이 불가하며, 국내세법에 따라 22% 원천징수 후 지급됩니다.</p>
+      <p class="en">This application applies only where exemption under a tax treaty is available. In the following cases, exemption cannot be applied and a 22% withholding tax will be deducted under Korean domestic tax law:</p>
+      <ol>
+        <li>대한민국과 조세조약이 체결되지 않은 국가의 거주자인 경우<span class="en">Resident of a country that has not concluded a tax treaty with the Republic of Korea</span></li>
+        <li>조세조약 체결국 거주자이더라도 해당 조약상 비과세·면제 요건을 충족하지 않는 경우<span class="en">Resident of a treaty country who does not meet the exemption requirements under that treaty</span></li>
+        <li>비과세·면제 신청 시, 거주자증명서 등 적격 증빙서류를 제출하지 않은 경우<span class="en">Failure to submit a valid certificate of tax residency or other required documents when applying</span></li>
+      </ol>
+      <p>* 조세조약 체결 여부 및 국가별 조약문은 아래 참고 사이트에서 확인할 수 있으나, 실제 비과세·면제 적용 여부는 조약상 요건 및 구체적 사실관계 검토가 필요하므로 필요시 재무회계팀에 문의하여 주시기 바랍니다.</p>
+      <p class="en">Whether a treaty exists and each country's treaty text can be checked at the reference site below; actual eligibility requires review of the treaty's specific requirements and the facts of each case, so please contact the Finance &amp; Accounting Team if needed.</p>
+      <p class="ref-link">(참고사이트 · 국문) <a href="https://taxlaw.nts.go.kr/st/USESTC001M.do" target="_blank" rel="noopener">https://taxlaw.nts.go.kr/st/USESTC001M.do</a></p>
+      <p class="ref-link">(Reference site · English) <a href="https://www.nts.go.kr/english/cm/cntnts/cntntsView.do?mi=20251&amp;cntntsId=8810" target="_blank" rel="noopener">Tax Treaty — National Tax Service (English)</a></p>
+    </div>
+    <div class="visa-warn">
+      <h3>⚠️ 비거주자 전문가 초빙 시 사전 비자 확인 / Advance Visa Check for Non-Resident Experts</h3>
+      <p>출입국 관리법에 따라 관광 목적 비자(B-1, B-2, C-3 등) 소지자는 수익 활동이 제한되어 강의료 지급 및 비거주자 비과세(면제) 신청이 불가할 수 있습니다.</p>
+      <p class="en">Under the Immigration Control Act, holders of tourist-purpose visas (B-1, B-2, C-3, etc.) are restricted from engaging in profit-making activities; honorarium payments and non-resident tax exemption applications may not be possible.</p>
+    </div>
+  `;
+}
+
+// Shown wherever a "22% withholding" outcome applies: explains the
+// minimum taxable threshold and why the effective rate is usually
+// 8.8% of the gross payment rather than a flat 22%.
+function rateInfoHtml(){
+  return `
+    <div class="rate-info">
+      <h3>과세 기준 및 원천징수율 안내 / Taxable Threshold &amp; Withholding Rate</h3>
+      <p><strong>1. 과세최저한(소액부징수)</strong> — 1회 지급 시 기타소득금액(지급액 − 필요경비)이 5만 원 이하이면 세금이 부과되지 않습니다.</p>
+      <p class="en"><strong>1. Minimum Taxable Threshold</strong> — If the other-income amount (payment minus necessary expenses) for a single payment is KRW 50,000 or less, no tax is imposed.</p>
+      <ul>
+        <li>125,000원 이하 지급 시: 필요경비 60%(75,000원)를 제외한 소득금액이 50,000원 이하가 되어 세금 0원(비과세)<span class="en">Payments of KRW 125,000 or less: after the 60% deemed necessary-expense deduction (KRW 75,000), the taxable income is KRW 50,000 or less, so tax is KRW 0 (exempt)</span></li>
+        <li>125,000원 초과 지급 시: 과세 대상<span class="en">Payments over KRW 125,000: subject to tax</span></li>
+        <li>동일인 합산: 동일인에게 같은 달에 지급하는 기타소득은 건별이 아닌 합산액으로 판단하므로, 쪼개어 지급해도 합산 소득금액이 5만 원을 넘으면 과세최저한이 적용되지 않습니다.<span class="en">Aggregation for the same recipient: other income paid to the same person within the same month is judged on a combined basis, not per payment — splitting a payment into smaller amounts does not avoid the threshold if the combined taxable income exceeds KRW 50,000.</span></li>
+        <li>주의: 소득금액이 5만 원을 초과하면, 계산된 세액이 1,000원 미만이더라도 원천징수 대상이 됩니다 (세액 1,000원 미만 시 징수하지 않는 일반 소액부징수 규정은 기타소득에는 적용되지 않습니다).<span class="en">Note: once the taxable income exceeds KRW 50,000, withholding applies even if the resulting tax works out to less than KRW 1,000 — the general "minor tax" exemption (no withholding when tax is under KRW 1,000) does not apply to other income.</span></li>
+      </ul>
+      <p><strong>2. 원천징수세율 — 8.8% vs 22%</strong> — 기타소득의 법정 원천징수세율은 소득세 20% + 지방소득세 2% = 총 22%입니다.</p>
+      <p class="en"><strong>2. Withholding Rate — 8.8% vs 22%</strong> — The statutory withholding rate for other income is 20% income tax + 2% local income tax = 22% in total.</p>
+      <ul>
+        <li>실제 원천징수 비율(지급액의 8.8%): 전문가 활용비는 수입의 60%를 필요경비로 인정해주므로, 남은 40%(소득금액)에 대해서만 22%의 세율을 적용합니다. 결과적으로 전체 지급액 기준으로는 8.8%를 원천징수합니다.<span class="en">Effective rate (8.8% of the gross payment): because 60% of the payment is recognized as a deemed necessary expense, the 22% rate is applied only to the remaining 40% (the taxable income) — so the effective withholding on the gross payment works out to 8.8%.</span></li>
+        <li>지급액의 22%가 부과되는 경우: 필요경비 인정이 안 되는 항목이거나, 이미 필요경비를 제외한 순소득금액을 기준으로 세금을 산출할 때는 22%가 원천징수됩니다.<span class="en">When 22% of the payment is withheld: this applies when the necessary-expense deduction is not recognized for the item, or when the tax is calculated on an amount that is already net of expenses.</span></li>
+      </ul>
+    </div>
+  `;
+}
+
+function renderResult(){
+  const app = document.getElementById('app');
+  let r = null;
+
+  if(state.residency === 'resident'){
+    r = {
+      tag:'taxed',
+      tagText:'원천징수 대상 (통상 8.8%) / Subject to Withholding (typically 8.8%)',
+      titleKr:'거주자 — 원천징수 대상',
+      titleEn:'Resident — Subject to Withholding Tax',
+      body:[
+        {kr:'용역수행장소와 관계없이 소득세법상 기타소득으로 원천징수됩니다. 필요경비 60%가 인정되는 일반적인 경우 실제 원천징수액은 지급액의 8.8%이며, 1회 지급액이 125,000원 이하이면 과세최저한에 해당되어 세금이 부과되지 않습니다. 필요경비가 인정되지 않는 경우 등에는 22%가 원천징수될 수 있습니다. 자세한 기준은 아래를 참고해 주세요. 별도 제출 서류는 필요하지 않습니다.',
+         en:'Regardless of where the service is performed, the payment is withheld as "other income" under the Korean Income Tax Act. In the typical case where the 60% deemed necessary-expense deduction applies, the actual withholding is 8.8% of the payment, and a single payment of KRW 125,000 or less falls under the minimum taxable threshold and is not taxed at all. Where the necessary-expense deduction does not apply, 22% may be withheld instead — see the details below. No additional documents are required.'}
+      ],
+      docs:null, extra:false, rateInfo:true
+    };
+  } else if(state.residency === 'nonresident' && state.location === 'abroad'){
+    r = {
+      tag:'exempt',
+      tagText:'비과세 / Tax-Exempt',
+      titleKr:'비거주자 + 용역수행장소 해외 — 비과세',
+      titleEn:'Non-resident, Service Performed Abroad — Tax-Exempt',
+      body:[
+        {kr:'비거주자가 국외에서 용역을 수행한 경우 국내원천소득에 해당하지 않아 비과세이며, 원천징수를 하지 않습니다. 별도 제출 서류가 필요하지 않습니다.',
+         en:'When a non-resident performs the service outside Korea, the income is not treated as Korean-source income and is therefore tax-exempt; no withholding applies. No documents are required.'}
+      ],
+      docs:null, extra:false
+    };
+  } else if(state.residency === 'nonresident' && state.location === 'korea' && state.treaty === 'yes'){
+    r = {
+      tag:'exempt',
+      tagText:'비과세 신청(서류 제출 시) / Exempt upon document submission',
+      titleKr:'비거주자 + 용역수행장소 한국 + 조세조약 비과세·면제 신청',
+      titleEn:'Non-resident, Service Performed in Korea — Applying for Tax Treaty Exemption',
+      body:[
+        {kr:'조세조약에 따른 비과세(면제) 적용을 받으시려면 아래 서류를 사전에 제출해 주셔야 합니다. 서류가 확인되면 비과세로 지급되며, 서류가 미비하거나 기한 내 제출되지 않으면 22% 원천징수 후 지급됩니다.',
+         en:'To apply for exemption under an applicable tax treaty, the following documents must be submitted in advance. If the documents are confirmed, the honorarium will be paid tax-exempt. If the documents are incomplete or not submitted in time, a 22% withholding tax will be deducted before payment.'}
+      ],
+      docs: TREATY_EXEMPTION_DOCS, extra:true
+    };
+  } else if(state.residency === 'nonresident' && state.location === 'korea' && state.treaty === 'no'){
+    r = {
+      tag:'taxed',
+      tagText:'원천징수 대상 (통상 8.8%) / Subject to Withholding (typically 8.8%)',
+      titleKr:'비거주자 + 용역수행장소 한국 + 조세조약 미신청 — 원천징수 대상',
+      titleEn:'Non-resident, Service Performed in Korea, No Treaty Exemption — Subject to Withholding',
+      body:[
+        {kr:'비과세(조세조약) 혜택을 신청하지 않으시는 경우, 소득세법상 기타소득으로 원천징수됩니다. 필요경비 60%가 인정되는 일반적인 경우 실제 원천징수액은 지급액의 8.8%이며, 1회 지급액이 125,000원 이하이면 과세최저한에 해당되어 세금이 부과되지 않습니다. 필요경비가 인정되지 않는 경우 등에는 22%가 원천징수될 수 있습니다(자세한 기준은 아래 참고). 원천징수 후에는 원천징수영수증(Certificate of Withholding Tax)을 발급해 드리며, 이를 활용하여 귀하의 거주국에서 세금 신고 시 이중과세 방지를 위한 신청이 가능합니다. 현지 환급 절차에 필요한 추가 서류가 있다면 제공해 드리겠사오니 언제든지 연락주시기 바랍니다.',
+         en:'If you do not apply for tax treaty exemption, the payment is withheld as "other income" under Korean tax law. In the typical case where the 60% deemed necessary-expense deduction applies, the actual withholding is 8.8% of the payment, and a single payment of KRW 125,000 or less falls under the minimum taxable threshold and is not taxed at all. Where the necessary-expense deduction does not apply, 22% may be withheld instead (see details below). We will issue a Certificate of Withholding Tax, which you can use to apply for a double taxation exemption when filing your taxes in your country. We are also happy to provide any additional documentation required for the local refund process.'}
+      ],
+      docs:null, extra:true, rateInfo:true
+    };
+  }
+
+  if(!r){ return; }
+
+  let docsHtml = '';
+  if(r.docs){
+    docsHtml = `<div class="doclist"><ol>` +
+      r.docs.map(d=>`<li>${d.kr}<span class="en">${d.en}</span></li>`).join('') +
+      `</ol></div>`;
+  }
+
+  app.insertAdjacentHTML('beforeend', `
+    <div class="result ${r.tag}">
+      <span class="tag ${r.tag}">${r.tagText}</span>
+      <h2>${r.titleKr}</h2>
+      <p class="sub">${r.titleEn}</p>
+      ${r.body.map(b=>`<p>${b.kr}</p><p class="en">${b.en}</p>`).join('')}
+      ${docsHtml}
+      ${r.rateInfo ? rateInfoHtml() : ''}
+      ${r.extra ? extraNoticeHtml() : ''}
+      <div class="note">본 안내는 일반적인 기준을 요약한 것으로, 개별 사안은 담당 부서 확인이 필요할 수 있습니다.<br>This summary is for general guidance only; individual cases may require confirmation by the relevant department.</div>
+    </div>
+    <div class="restart"><button class="btn-secondary" onclick="location.reload()">처음부터 다시 / Start Over</button></div>
+  `);
+}
+
+render();
+</script>
+</body>
+</html>
