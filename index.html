@@ -96,9 +96,11 @@
   .eform-cta p{font-size:13px; margin:0 0 6px; line-height:1.6;}
   .eform-cta p.en{color:var(--muted); font-size:12px; margin:0 0 10px;}
   .eform-cta a.cta-btn{display:inline-block; background:#2e7d32; color:#fff; font-weight:700;
-    font-size:14px; text-decoration:none; padding:11px 20px; border-radius:7px; margin-top:4px;}
+    font-size:13.5px; text-decoration:none; padding:9px 16px; border-radius:7px; white-space:nowrap;}
   .eform-cta a.cta-btn:hover{background:#256628;}
-  .eform-cta .fallback{font-size:11.5px; color:var(--muted); margin-top:10px; word-break:break-all;}
+  .eform-cta .form-links{margin-top:12px; display:flex; flex-direction:column; gap:10px;}
+  .eform-cta .form-links .row{display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+  .eform-cta .form-links .lbl{font-size:13px; font-weight:600; color:var(--text); min-width:170px;}
 </style>
 </head>
 <body>
@@ -117,14 +119,17 @@
 // country — the guidance is the same for everyone, with the U.S. case
 // shown inline as a worked example for the residency-certificate item).
 // ---------------------------------------------------------------
-// Public eformsign fill-and-sign link for the exemption application form
-// (item ① below). Reusable link — each visitor creates a new document.
-const EFORM_URL = "https://www.gov-eformsign.com/?s=27xZvv";
+// Public eformsign fill-and-sign links for the exemption application
+// form. Reusable links — each visitor creates a new document.
+// The English form currently points to the Korean link; replace
+// EFORM_URL_EN once a dedicated English form is available.
+const EFORM_URL_KR = "https://www.gov-eformsign.com/?s=27xZvv";
+const EFORM_URL_EN = "https://www.gov-eformsign.com/?s=27xZvv";
 
 const TREATY_EXEMPTION_DOCS = [
   {
-    kr: "비과세·면제 신청서 — 아래 [전자서명 신청서 작성하기] 버튼에서 온라인으로 작성·서명해 주세요. 상단 인적사항과 서명만 입력하시면 되며, 금액 등 나머지 정보는 재무회계팀에서 작성 후 국세청에 제출합니다.",
-    en: "Application for Non-Taxation·Exemption — please complete and sign it online using the [Open e-Signature Form] button below. You only need to enter the personal details at the top and sign; the amount and other fields are completed by the Finance & Accounting Team before submission to the National Tax Service."
+    kr: "비과세·면제 신청서 — 위 [신청서 작성]에서 온라인으로 작성·서명 (상단 인적사항과 서명만 입력, 금액 등 나머지 정보는 재무회계팀에서 작성 후 국세청 제출)",
+    en: "Application for Non-Taxation·Exemption — completed and signed online via [Open Form] above (enter only the personal details and signature; the amount and other fields are completed by the Finance & Accounting Team before submission to the National Tax Service)"
   },
   {
     kr: "거주자증명서 — 소득자의 거주지국 과세당국이 발급한 당해연도 증명서 (예: 미국 거주자의 경우 미국 국세청(IRS)이 발급한 Form 6166만 인정됩니다.)",
@@ -226,16 +231,18 @@ function exclusionHtml(){
   `;
 }
 
-// Call-to-action to open the eformsign fill-and-sign link for the
+// Call-to-action to open the eformsign fill-and-sign links for the
 // exemption application form (shown only on the "apply" outcome).
-function eformCtaHtml(url){
+function eformCtaHtml(){
   return `
     <div class="eform-cta">
-      <h3>① 비과세·면제 신청서 — 전자서명으로 작성 / Complete the Application Form by e-Signature</h3>
-      <p>아래 버튼을 누르면 연구기획팀(rpd@kdischool.ac.kr)이 준비한 신청서를 온라인에서 바로 작성하고 서명할 수 있습니다. 상단의 개인정보 수집·이용 동의에 체크한 뒤, 인적사항을 입력하고 서명해 주세요. 제출된 신청서는 연구기획팀으로 자동 접수됩니다.</p>
-      <p class="en">The button below opens the application form prepared by the Research Planning Team (rpd@kdischool.ac.kr) for you to fill in and sign online. After checking the consent to collection and use of personal information at the top, enter your personal details and sign. The submitted form is delivered to the Research Planning Team automatically.</p>
-      <p><a class="cta-btn" href="${url}" target="_blank" rel="noopener">전자서명 신청서 작성하기 / Open e-Signature Form →</a></p>
-      <p class="fallback">버튼이 열리지 않으면 아래 주소를 브라우저에 직접 입력하세요 / If the button does not open, paste this address into your browser:<br>${url}</p>
+      <h3>비과세·면제 신청서 작성 및 서류 제출 / Completing the Application Form &amp; Submitting Documents</h3>
+      <p>아래 "신청서 작성" 버튼을 누르고 상단의 개인정보 수집·이용 동의에 체크한 뒤, 인적사항을 입력하고 서명해 주세요. 제출서류를 등록한 후 전송해 주시면 자동 접수 됩니다.</p>
+      <p class="en">Click the "Open Form" button below, tick the consent to the collection and use of personal information at the top, then enter your personal details and sign. Once you have attached the required documents and submitted, your application is received automatically.</p>
+      <div class="form-links">
+        <div class="row"><span class="lbl">국문 양식 / Korean form</span><a class="cta-btn" href="${EFORM_URL_KR}" target="_blank" rel="noopener">신청서 작성 / Open Form →</a></div>
+        <div class="row"><span class="lbl">영문 양식 / English form</span><a class="cta-btn" href="${EFORM_URL_EN}" target="_blank" rel="noopener">신청서 작성 / Open Form →</a></div>
+      </div>
     </div>
   `;
 }
@@ -316,7 +323,7 @@ function renderResult(){
         {kr:'조세조약에 따른 비과세(면제) 적용을 받으시려면 아래 서류를 사전에 제출해 주셔야 합니다. 서류가 확인되면 비과세로 지급되며, 서류가 미비하거나 기한 내 제출되지 않으면 22% 원천징수 후 지급됩니다.',
          en:'To apply for exemption under an applicable tax treaty, the following documents must be submitted in advance. If the documents are confirmed, the honorarium will be paid tax-exempt. If the documents are incomplete or not submitted in time, a 22% withholding tax will be deducted before payment.'}
       ],
-      docs: TREATY_EXEMPTION_DOCS, eformUrl: EFORM_URL, exclusion:true, visaWarn:true
+      docs: TREATY_EXEMPTION_DOCS, eform:true, exclusion:true, visaWarn:true
     };
   } else if(state.residency === 'nonresident' && state.location === 'korea' && state.treaty === 'no'){
     r = {
@@ -346,9 +353,9 @@ function renderResult(){
       <span class="tag ${r.tag}">${r.tagText}</span>
       <h2>${r.titleKr}</h2>
       <p class="sub">${r.titleEn}</p>
+      ${r.eform ? eformCtaHtml() : ''}
       ${r.body.map(b=>`<p>${b.kr}</p><p class="en">${b.en}</p>`).join('')}
       ${docsHtml}
-      ${r.eformUrl ? eformCtaHtml(r.eformUrl) : ''}
       ${r.rateInfo ? rateInfoHtml() : ''}
       ${r.exclusion ? exclusionHtml() : ''}
       ${r.visaWarn ? visaWarnHtml() : ''}
