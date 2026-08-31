@@ -193,10 +193,9 @@ function attachHandlers(){
   });
 }
 
-// Shared notice shown for both non-resident + Korea outcomes (with or
-// without treaty exemption): why exemption might not apply, and the
-// visa reminder.
-function extraNoticeHtml(){
+// Shown only on the treaty-application ("yes") outcome: the cases in
+// which a filed exemption application is nonetheless denied.
+function exclusionHtml(){
   return `
     <div class="exclusion">
       <h3>적용 제외 사유 / Cases Where Exemption Does Not Apply</h3>
@@ -212,6 +211,12 @@ function extraNoticeHtml(){
       <p class="ref-link">(참고사이트 · 국문) <a href="https://taxlaw.nts.go.kr/st/USESTC001M.do" target="_blank" rel="noopener">https://taxlaw.nts.go.kr/st/USESTC001M.do</a></p>
       <p class="ref-link">(Reference site · English) <a href="https://www.nts.go.kr/english/cm/cntnts/cntntsView.do?mi=20251&amp;cntntsId=8810" target="_blank" rel="noopener">Tax Treaty — National Tax Service (English)</a></p>
     </div>
+  `;
+}
+
+// Visa reminder — shown on every non-resident + Korea outcome.
+function visaWarnHtml(){
+  return `
     <div class="visa-warn">
       <h3>⚠️ 비거주자 전문가 초빙 시 사전 비자 확인 / Advance Visa Check for Non-Resident Experts</h3>
       <p>출입국 관리법에 따라 관광 목적 비자(B-1, B-2, C-3 등) 소지자는 수익 활동이 제한되어 강의료 지급 및 비거주자 비과세(면제) 신청이 불가할 수 있습니다.</p>
@@ -220,9 +225,11 @@ function extraNoticeHtml(){
   `;
 }
 
-// Shown wherever a "22% withholding" outcome applies: explains the
-// minimum taxable threshold and why the effective rate is usually
-// 8.8% of the gross payment rather than a flat 22%.
+// Shown on the resident outcome only: explains the minimum taxable
+// threshold and why the effective rate is usually 8.8% of the gross
+// payment rather than a flat 22%. (Non-residents are taxed under a
+// different category — personal-services income — so this does not
+// apply to them.)
 function rateInfoHtml(){
   return `
     <div class="rate-info">
@@ -259,7 +266,7 @@ function renderResult(){
         {kr:'용역수행장소와 관계없이 소득세법상 기타소득으로 원천징수됩니다. 필요경비 60%가 인정되는 일반적인 경우 실제 원천징수액은 지급액의 8.8%이며, 1회 지급액이 125,000원 이하이면 과세최저한에 해당되어 세금이 부과되지 않습니다. 필요경비가 인정되지 않는 경우 등에는 22%가 원천징수될 수 있습니다. 자세한 기준은 아래를 참고해 주세요. 별도 제출 서류는 필요하지 않습니다.',
          en:'Regardless of where the service is performed, the payment is withheld as "other income" under the Korean Income Tax Act. In the typical case where the 60% deemed necessary-expense deduction applies, the actual withholding is 8.8% of the payment, and a single payment of KRW 125,000 or less falls under the minimum taxable threshold and is not taxed at all. Where the necessary-expense deduction does not apply, 22% may be withheld instead — see the details below. No additional documents are required.'}
       ],
-      docs:null, extra:false, rateInfo:true
+      docs:null, rateInfo:true
     };
   } else if(state.residency === 'nonresident' && state.location === 'abroad'){
     r = {
@@ -271,7 +278,7 @@ function renderResult(){
         {kr:'비거주자가 국외에서 용역을 수행한 경우 국내원천소득에 해당하지 않아 비과세이며, 원천징수를 하지 않습니다. 별도 제출 서류가 필요하지 않습니다.',
          en:'When a non-resident performs the service outside Korea, the income is not treated as Korean-source income and is therefore tax-exempt; no withholding applies. No documents are required.'}
       ],
-      docs:null, extra:false
+      docs:null
     };
   } else if(state.residency === 'nonresident' && state.location === 'korea' && state.treaty === 'yes'){
     r = {
@@ -283,19 +290,19 @@ function renderResult(){
         {kr:'조세조약에 따른 비과세(면제) 적용을 받으시려면 아래 서류를 사전에 제출해 주셔야 합니다. 서류가 확인되면 비과세로 지급되며, 서류가 미비하거나 기한 내 제출되지 않으면 22% 원천징수 후 지급됩니다.',
          en:'To apply for exemption under an applicable tax treaty, the following documents must be submitted in advance. If the documents are confirmed, the honorarium will be paid tax-exempt. If the documents are incomplete or not submitted in time, a 22% withholding tax will be deducted before payment.'}
       ],
-      docs: TREATY_EXEMPTION_DOCS, extra:true
+      docs: TREATY_EXEMPTION_DOCS, exclusion:true, visaWarn:true
     };
   } else if(state.residency === 'nonresident' && state.location === 'korea' && state.treaty === 'no'){
     r = {
       tag:'taxed',
-      tagText:'원천징수 대상 (통상 8.8%) / Subject to Withholding (typically 8.8%)',
-      titleKr:'비거주자 + 용역수행장소 한국 + 조세조약 미신청 — 원천징수 대상',
-      titleEn:'Non-resident, Service Performed in Korea, No Treaty Exemption — Subject to Withholding',
+      tagText:'원천징수 22% / Subject to 22% Withholding',
+      titleKr:'비거주자 + 용역수행장소 한국 + 조세조약 미신청 — 22% 원천징수',
+      titleEn:'Non-resident, Service Performed in Korea, No Treaty Exemption — 22% Withholding',
       body:[
-        {kr:'비과세(조세조약) 혜택을 신청하지 않으시는 경우, 소득세법상 기타소득으로 원천징수됩니다. 필요경비 60%가 인정되는 일반적인 경우 실제 원천징수액은 지급액의 8.8%이며, 1회 지급액이 125,000원 이하이면 과세최저한에 해당되어 세금이 부과되지 않습니다. 필요경비가 인정되지 않는 경우 등에는 22%가 원천징수될 수 있습니다(자세한 기준은 아래 참고). 원천징수 후에는 원천징수영수증(Certificate of Withholding Tax)을 발급해 드리며, 이를 활용하여 귀하의 거주국에서 세금 신고 시 이중과세 방지를 위한 신청이 가능합니다. 현지 환급 절차에 필요한 추가 서류가 있다면 제공해 드리겠사오니 언제든지 연락주시기 바랍니다.',
-         en:'If you do not apply for tax treaty exemption, the payment is withheld as "other income" under Korean tax law. In the typical case where the 60% deemed necessary-expense deduction applies, the actual withholding is 8.8% of the payment, and a single payment of KRW 125,000 or less falls under the minimum taxable threshold and is not taxed at all. Where the necessary-expense deduction does not apply, 22% may be withheld instead (see details below). We will issue a Certificate of Withholding Tax, which you can use to apply for a double taxation exemption when filing your taxes in your country. We are also happy to provide any additional documentation required for the local refund process.'}
+        {kr:'비거주자가 국내에서 수행한 인적용역의 대가는 거주자의 기타소득이 아니라 비거주자 인적용역소득(국내원천소득)으로 구분되어, 지급액 전액에 대해 22%(소득세 20% + 지방소득세 2%)가 원천징수됩니다. 거주자에게 적용되는 필요경비 60% 개산공제 및 과세최저한(소액부징수)은 적용되지 않습니다. 원천징수 후에는 원천징수영수증(Certificate of Withholding Tax)을 발급해 드리며, 이를 활용하여 거주국에서 세금 신고 시 이중과세 방지(외국납부세액공제 등)를 위한 신청이 가능합니다. 현지 환급 절차에 필요한 추가 서류가 있으면 제공해 드리겠사오니 언제든지 연락주시기 바랍니다.',
+         en:'A fee for personal (independent) services performed in Korea by a non-resident is classified not as a resident\'s "other income" but as non-resident personal-services income (Korean-source income), and a 22% withholding tax (20% income tax + 2% local income tax) is deducted from the full payment amount. The 60% deemed necessary-expense deduction and the minimum-taxable-threshold rule available to residents do not apply. After withholding, we will issue a Certificate of Withholding Tax, which you can use to claim double-taxation relief (e.g. a foreign tax credit) when filing taxes in your country of residence. We are also happy to provide any additional documentation required for the local refund process.'}
       ],
-      docs:null, extra:true, rateInfo:true
+      docs:null, visaWarn:true
     };
   }
 
@@ -316,7 +323,8 @@ function renderResult(){
       ${r.body.map(b=>`<p>${b.kr}</p><p class="en">${b.en}</p>`).join('')}
       ${docsHtml}
       ${r.rateInfo ? rateInfoHtml() : ''}
-      ${r.extra ? extraNoticeHtml() : ''}
+      ${r.exclusion ? exclusionHtml() : ''}
+      ${r.visaWarn ? visaWarnHtml() : ''}
       <div class="note">본 안내는 일반적인 기준을 요약한 것으로, 개별 사안은 담당 부서 확인이 필요할 수 있습니다.<br>This summary is for general guidance only; individual cases may require confirmation by the relevant department.</div>
     </div>
     <div class="restart"><button class="btn-secondary" onclick="location.reload()">처음부터 다시 / Start Over</button></div>
