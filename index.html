@@ -169,8 +169,8 @@ function render(){
       <p class="q-kr">조세조약에 따른 비과세(면제) 적용을 신청하시겠습니까?</p>
       <p class="q-en">Would you like to apply for exemption under an applicable tax treaty?</p>
       <div class="options">
-        ${opt('treaty','yes','예, 신청함','Yes, I will apply', state.treaty==='yes')}
-        ${opt('treaty','no','아니오, 신청하지 아니함','No, I will not apply', state.treaty==='no')}
+        ${opt('treaty','yes','신청 희망','Yes, I will apply', state.treaty==='yes')}
+        ${opt('treaty','no','신청 비희망','No, I will not apply', state.treaty==='no')}
       </div>
     </div>`;
   }
