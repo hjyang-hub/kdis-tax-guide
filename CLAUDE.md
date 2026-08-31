@@ -47,6 +47,13 @@
    https://{사용자명}.github.io/kdis-tax-guide/
    ```
 
+## 배포 완료 정보 (2026-08-31)
+
+- GitHub 계정: `hjyang-hub`
+- 저장소: https://github.com/hjyang-hub/kdis-tax-guide (Public)
+- **라이브 URL: https://hjyang-hub.github.io/kdis-tax-guide/**
+- Pages 소스: `main` 브랜치 `/ (root)`
+
 ## 향후 유지보수
 
 `index.html`의 내용(안내 문구, 세율/과세최저한 설명, 링크 등)을 수정할 일이 생기면:
