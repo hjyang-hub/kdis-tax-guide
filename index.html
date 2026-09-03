@@ -16,8 +16,6 @@
     background:var(--bg); color:var(--text); padding:32px 16px;
   }
   .wrap{max-width:1040px; margin:0 auto;}
-  .steps-row{display:flex; flex-wrap:wrap; gap:16px; margin-bottom:16px; align-items:stretch;}
-  .steps-row .card{flex:1 1 260px; margin-bottom:0;}
   header{
     background:var(--navy); color:#fff; border-radius:10px;
     padding:24px 28px; margin-bottom:20px;
@@ -28,7 +26,6 @@
     background:var(--card); border:1px solid var(--border); border-radius:10px;
     padding:22px 24px; margin-bottom:16px;
   }
-  .step-label{font-size:11px; letter-spacing:.06em; color:var(--accent); font-weight:700; margin-bottom:4px;}
   .q-kr{font-size:16px; font-weight:700; margin:0 0 2px;}
   .q-en{font-size:13px; color:var(--muted); margin:0 0 14px;}
   .options{display:flex; flex-direction:column; gap:10px;}
@@ -42,6 +39,7 @@
   .opt .label{font-size:14px;}
   .opt .label .kr{font-weight:600;}
   .opt .label .en{color:var(--muted); font-size:12.5px;}
+  .opt .label .opt-sub{font-weight:400; color:var(--muted); font-size:12.5px;}
   select.country{
     width:100%; padding:10px 12px; border:1.5px solid var(--border); border-radius:8px;
     font-size:14px; margin-top:4px;
@@ -146,71 +144,66 @@ const TREATY_EXEMPTION_DOCS = [
 
 const state = { residency: null, location: null, treaty: null };
 
-function opt(name, value, kr, en, checked){
-  return `<label class="opt${checked?' selected':''}" data-name="${name}" data-value="${value}">
-    <input type="radio" name="${name}" value="${value}" ${checked?'checked':''}>
-    <span class="label"><span class="kr">${kr}</span><br><span class="en">${en}</span></span>
-  </label>`;
-}
+// The four distinct situations. Selecting one sets the full state in a
+// single click and renders that outcome directly.
+const CASES = [
+  {
+    id: 'resident',
+    kr: '거주자',
+    krSub: '용역수행장소 무관',
+    en: 'Resident of Korea (regardless of where the service is performed)',
+    state: { residency:'resident', location:null, treaty:null }
+  },
+  {
+    id: 'nr-abroad',
+    kr: '비거주자 · 용역수행장소 해외',
+    krSub: '',
+    en: 'Non-resident · service performed outside Korea',
+    state: { residency:'nonresident', location:'abroad', treaty:null }
+  },
+  {
+    id: 'nr-korea-apply',
+    kr: '비거주자 · 용역수행장소 한국 · 비과세·면제 신청 희망',
+    krSub: '',
+    en: 'Non-resident · service performed in Korea · applying for tax exemption',
+    state: { residency:'nonresident', location:'korea', treaty:'yes' }
+  },
+  {
+    id: 'nr-korea-noapply',
+    kr: '비거주자 · 용역수행장소 한국 · 비과세·면제 신청 비희망',
+    krSub: '',
+    en: 'Non-resident · service performed in Korea · not applying for tax exemption',
+    state: { residency:'nonresident', location:'korea', treaty:'no' }
+  }
+];
+
+let selectedCase = null;
 
 function render(){
   const app = document.getElementById('app');
-  let html = '';
+  const optsHtml = CASES.map(c => `
+    <label class="opt${selectedCase===c.id?' selected':''}" data-case="${c.id}">
+      <input type="radio" name="case" value="${c.id}" ${selectedCase===c.id?'checked':''}>
+      <span class="label"><span class="kr">${c.kr}${c.krSub?` <span class="opt-sub">· ${c.krSub}</span>`:''}</span><br><span class="en">${c.en}</span></span>
+    </label>`).join('');
 
-  // STEP 1 — residency
-  html += `<div class="card" id="step1">
-    <div class="step-label">STEP 1</div>
-    <p class="q-kr">소득자의 거주 구분은 무엇인가요?</p>
-    <p class="q-en">What is the recipient's tax residency status?</p>
-    <div class="options">
-      ${opt('residency','resident','거주자','Resident of Korea', state.residency==='resident')}
-      ${opt('residency','nonresident','비거주자','Non-resident of Korea', state.residency==='nonresident')}
-    </div>
-    <p class="ref-link" style="margin-top:12px;">(참고 · 거주자/비거주자 판정 기준, 국문만 제공) <a href="https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=7916&amp;mi=6636" target="_blank" rel="noopener">국세청 — 비거주자 판정</a></p>
-  </div>`;
-
-  // STEP 2 — location (only if nonresident)
-  if(state.residency === 'nonresident'){
-    html += `<div class="card" id="step2">
-      <div class="step-label">STEP 2</div>
-      <p class="q-kr">용역수행장소는 어디인가요?</p>
-      <p class="q-en">Where was the service actually performed?</p>
-      <div class="options">
-        ${opt('location','abroad','해외','Outside Korea', state.location==='abroad')}
-        ${opt('location','korea','한국','In Korea', state.location==='korea')}
-      </div>
+  app.innerHTML = `
+    <div class="card" id="select">
+      <p class="q-kr">해당하는 경우를 선택하시면 안내가 표시됩니다</p>
+      <p class="q-en">Select the case that applies to you to see the guidance</p>
+      <div class="options">${optsHtml}</div>
+      <p class="ref-link" style="margin-top:12px;">(참고 · 거주자/비거주자 판정 기준, 국문만 제공) <a href="https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=7916&amp;mi=6636" target="_blank" rel="noopener">국세청 — 비거주자 판정</a></p>
     </div>`;
-  }
 
-  // STEP 3 — treaty exemption (only if nonresident + korea)
-  if(state.residency === 'nonresident' && state.location === 'korea'){
-    html += `<div class="card" id="step3">
-      <div class="step-label">STEP 3</div>
-      <p class="q-kr">조세조약에 따른 비과세(면제) 적용을 신청하시겠습니까?</p>
-      <p class="q-en">Would you like to apply for exemption under an applicable tax treaty?</p>
-      <div class="options">
-        ${opt('treaty','yes','신청 희망','Yes, I will apply', state.treaty==='yes')}
-        ${opt('treaty','no','신청 비희망','No, I will not apply', state.treaty==='no')}
-      </div>
-    </div>`;
-  }
-
-  app.innerHTML = `<div class="steps-row">${html}</div>`;
-  attachHandlers();
-  renderResult();
-}
-
-function attachHandlers(){
-  document.querySelectorAll('.opt').forEach(el=>{
-    el.addEventListener('click', ()=>{
-      const name = el.dataset.name, value = el.dataset.value;
-      state[name] = value;
-      // reset downstream state when an earlier answer changes
-      if(name === 'residency'){ state.location=null; state.treaty=null; }
-      if(name === 'location'){ state.treaty=null; }
+  document.querySelectorAll('.opt').forEach(el => {
+    el.addEventListener('click', () => {
+      selectedCase = el.dataset.case;
+      Object.assign(state, CASES.find(c => c.id === selectedCase).state);
       render();
     });
   });
+
+  renderResult();
 }
 
 // Shown only on the treaty-application ("yes") outcome: the cases in
