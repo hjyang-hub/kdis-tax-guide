@@ -67,7 +67,9 @@
   .tag.exempt{background:#2e7d32; color:#fff;}
   .tag.taxed{background:#e08e00; color:#fff;}
   .note{font-size:12px; color:var(--muted); margin-top:14px; border-top:1px dashed var(--border); padding-top:10px;}
-  .restart{margin-top:16px; text-align:right;}
+  .select-head{display:flex; align-items:flex-start; justify-content:space-between; gap:12px;}
+  .select-head .q-kr{margin:0;}
+  .btn-clear{flex:none; padding:6px 12px; font-size:12px;}
   .progress{font-size:12px; color:var(--muted); margin-bottom:14px;}
   .exclusion{background:#fff; border:1px solid var(--border); border-radius:8px; padding:14px 16px; margin-top:14px;}
   .exclusion h3{margin:0 0 8px; font-size:13.5px; color:var(--navy);}
@@ -189,7 +191,10 @@ function render(){
 
   app.innerHTML = `
     <div class="card" id="select">
-      <p class="q-kr">해당하는 경우를 선택하시면 안내가 표시됩니다</p>
+      <div class="select-head">
+        <p class="q-kr">해당하는 경우를 선택하시면 안내가 표시됩니다.</p>
+        ${selectedCase ? `<button class="btn-secondary btn-clear" onclick="clearSelection()">선택 해제 / Clear</button>` : ''}
+      </div>
       <p class="q-en">Select the case that applies to you to see the guidance</p>
       <div class="options">${optsHtml}</div>
       <p class="ref-link" style="margin-top:12px;">(참고 · 거주자/비거주자 판정 기준, 국문만 제공) <a href="https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=7916&amp;mi=6636" target="_blank" rel="noopener">국세청 — 비거주자 판정</a></p>
@@ -204,6 +209,13 @@ function render(){
   });
 
   renderResult();
+}
+
+function clearSelection(){
+  selectedCase = null;
+  state.residency = state.location = state.treaty = null;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // Shown only on the treaty-application ("yes") outcome: the cases in
@@ -361,7 +373,6 @@ function renderResult(){
       ${r.visaWarn ? visaWarnHtml() : ''}
       <div class="note">본 안내는 일반적인 기준을 요약한 것으로, 개별 사안은 담당 부서 확인이 필요할 수 있습니다.<br>This summary is for general guidance only; individual cases may require confirmation by the relevant department.</div>
     </div>
-    <div class="restart"><button class="btn-secondary" onclick="location.reload()">처음부터 다시 / Start Over</button></div>
   `);
 }
 
