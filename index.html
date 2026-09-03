@@ -237,7 +237,7 @@ function eformCtaHtml(){
   return `
     <div class="eform-cta">
       <h3>비과세·면제 신청서 작성 및 서류 제출 / Completing the Application Form &amp; Submitting Documents</h3>
-      <p>아래 "신청서 작성" 버튼을 누르고 상단의 개인정보 수집·이용 동의에 체크한 뒤, 인적사항을 입력하고 서명해 주세요. 제출서류를 등록한 후 전송해 주시면 자동 접수 됩니다.</p>
+      <p>아래 "신청서 작성" 버튼을 누르고 상단의 개인정보 수집·이용 동의에 체크한 뒤, 인적사항을 입력하고 서명해 주세요. 제출서류까지 등록한 후 전송해 주시면 자동 접수 됩니다.</p>
       <p class="en">Click the "Open Form" button below, tick the consent to the collection and use of personal information at the top, then enter your personal details and sign. Once you have attached the required documents and submitted, your application is received automatically.</p>
       <div class="form-links">
         <div class="row"><span class="lbl">국문 양식 / Korean form</span><a class="cta-btn" href="${EFORM_URL_KR}" target="_blank" rel="noopener">신청서 작성 / Open Form →</a></div>
@@ -320,8 +320,8 @@ function renderResult(){
       titleKr:'비거주자 + 용역수행장소 한국 + 비과세·면제 신청',
       titleEn:'Non-resident, Service Performed in Korea — Applying for Tax Exemption',
       body:[
-        {kr:'조세조약에 따른 비과세(면제) 적용을 받으시려면 아래 서류를 사전에 제출해 주셔야 합니다. 서류가 확인되면 비과세로 지급되며, 서류가 미비하거나 기한 내 제출되지 않으면 22% 원천징수 후 지급됩니다.',
-         en:'To apply for exemption under an applicable tax treaty, the following documents must be submitted in advance. If the documents are confirmed, the honorarium will be paid tax-exempt. If the documents are incomplete or not submitted in time, a 22% withholding tax will be deducted before payment.'}
+        {kr:'조세조약에 따른 비과세(면제) 적용을 받는데 필요한 서류는 아래와 같습니다. 서류가 확인되면 비과세로 지급되며, 서류가 미비하거나 기한 내 제출되지 않으면 22% 원천징수 후 지급됩니다.',
+         en:'The documents required to receive exemption under an applicable tax treaty are listed below. If the documents are confirmed, the honorarium will be paid tax-exempt. If the documents are incomplete or not submitted in time, a 22% withholding tax will be deducted before payment.'}
       ],
       docs: TREATY_EXEMPTION_DOCS, eform:true, exclusion:true, visaWarn:true
     };
